@@ -1,0 +1,49 @@
+.cartlists-container {
+  display: flex;
+  flex-direction: column;
+  margin: 60px;
+}
+
+.cartlists-container-box {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  /* align-items: flex-end; */
+
+  padding: 20px;
+
+  border-top: 1px solid lightgray;
+}
+
+.cartlists-container-box > span {
+  display: flex;
+
+  /* justify-content: center; */
+  align-items: center;
+
+  padding-right: 20px;
+
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.cartlists-container-box > button {
+  width: 200px;
+  height: 50px;
+
+  font-size: 18px;
+  font-weight: bold;
+  color: white;
+
+  border: 0px;
+  border-radius: 5px;
+
+  background-color: grey;
+
+  cursor: pointer;
+}
+
+.cartlists-container-box > button:hover {
+  background-color: lightgray;
+  color: white;
+}

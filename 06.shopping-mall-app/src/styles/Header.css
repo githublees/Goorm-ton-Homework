@@ -1,0 +1,43 @@
+.header {
+  margin: 0;
+  border-bottom: 5px solid lightgray;
+}
+
+.header-container {
+  display: flex;
+  /* flex-direction: row; */
+  justify-content: space-between;
+  align-items: center;
+
+  margin: 10px 40px;
+}
+
+.header-container__logo {
+  /* display: flex; */
+  font-size: 30px;
+  font-weight: bold;
+}
+
+.header-container-info {
+  display: flex;
+  flex-direction: row;
+}
+
+.notifications-icon-container {
+  position: relative;
+}
+
+.notifications-count {
+  position: absolute;
+  top: -3px;
+  right: -10px;
+  background-color: rgb(200, 0, 0);
+  color: white;
+  /* font-size: 11px; */
+  font-size: 10px;
+  padding-left: 6px;
+  padding-right: 6px;
+  padding-top: 2px;
+  padding-bottom: 2px;
+  border-radius: 10px;
+}

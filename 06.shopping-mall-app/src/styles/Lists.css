@@ -1,0 +1,32 @@
+.list-container {
+  /* display: grid; */
+  border-top: 1px solid lightgray;
+}
+
+.list-container__products {
+  display: grid;
+
+  /* grid-template-rows: 1fr auto; */
+  grid-template-columns: repeat(auto-fit, minmax(350px, max-content));
+  justify-content: center;
+
+  grid-gap: 1em;
+  /* justify-content: center; */
+  /* padding: initial; */
+}
+.list-container__showing {
+  margin-top: 4em;
+  /* align-content: center; */
+
+  grid-column: 1 / auto-fit;
+
+  text-align: left;
+}
+
+.list-container__showing > span {
+  /* margin: 20px auto 20px 75px; */
+
+  font-size: 25px;
+  font-weight: bold;
+  color: grey;
+}

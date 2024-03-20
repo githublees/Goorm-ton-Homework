@@ -1,0 +1,114 @@
+.login-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  /* justify-items: center; */
+  /* align-content: center; */
+  align-items: center;
+
+  margin: 50px;
+}
+
+.login-container-form {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  width: 500px;
+  height: 400px;
+
+  padding: 20px;
+
+  border-radius: 10px;
+  border: 1px solid gray;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+}
+
+form > span {
+  padding: 20px;
+
+  font-size: 30px;
+  font-weight: bold;
+}
+
+input {
+  width: 350px;
+  height: 40px;
+
+  margin: 10px;
+
+  font-size: 15px;
+  padding-left: 10px;
+
+  border: 1px solid gray;
+  border-radius: 10px;
+}
+
+input::placeholder {
+  color: lightgray;
+
+  font-size: 15px;
+}
+
+form > button {
+  width: 365px;
+  height: 45px;
+
+  margin: 10px;
+
+  font-size: 20px;
+  font-weight: bold;
+
+  border: 1px solid gray;
+  border-radius: 10px;
+
+  color: white;
+  background-color: gray;
+
+  cursor: pointer;
+}
+
+form > button:hover {
+  border: 1px solid lightgray;
+  color: white;
+  background-color: lightgray;
+}
+
+.login-container-form > button {
+  margin: 10px;
+
+  font-size: 15px;
+
+  border: 0px;
+  border-bottom: 1px solid;
+
+  color: blue;
+  background-color: white;
+
+  cursor: pointer;
+}
+
+.login-container-form > button:hover {
+  color: blueviolet;
+}
+
+.error-messege-container {
+  display: flex;
+  justify-content: left;
+  height: 12px;
+
+  margin-left: 12px;
+  padding-bottom: 10px;
+}
+
+.error-messege-container > span {
+  padding: 0px;
+  margin: 0px;
+
+  font-size: 12px;
+}
