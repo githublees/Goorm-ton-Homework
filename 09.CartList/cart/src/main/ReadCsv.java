@@ -13,7 +13,6 @@ public class ReadCsv {
 	
 	private ArrayList<Product> list = new ArrayList<>();
 	
-	
 	ReadCsv(){};
 	
 	public ArrayList<Product> read() {
@@ -21,8 +20,11 @@ public class ReadCsv {
 		BufferedReader br = null;
 		
 		try {
+			
+			// 현재 작업 디렉토리를 확인
 			String currentDir = System.getProperty("user.dir");
 			
+			// 파일에 접근할 수 있는 경로를 생성
 			Path filePath = Paths.get(currentDir, "File.csv");
 			
 			br = Files.newBufferedReader(filePath, Charset.forName("UTF-8"));
