@@ -16,10 +16,6 @@ public class Cart {
 		return CartInstanceHolder.INSTANCE;
 	}	
 	
-	public HashMap<Product, Integer> getCart() {
-		return cart;
-	}
-	
 	public void addProduct(Product p, int quantity) {
 		cart.put(p, cart.getOrDefault(p, 0) + quantity);
 	}
