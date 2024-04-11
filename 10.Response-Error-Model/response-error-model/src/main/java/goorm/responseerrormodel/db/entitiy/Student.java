@@ -7,7 +7,7 @@ import lombok.Setter;
 public class Student {
 
     String name;
-    int grade;
+    Integer grade;
 
     public Student() {
     }

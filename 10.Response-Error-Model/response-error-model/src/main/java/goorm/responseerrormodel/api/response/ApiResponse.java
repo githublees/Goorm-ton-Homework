@@ -1,7 +1,7 @@
 package goorm.responseerrormodel.api.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import goorm.responseerrormodel.common.exception.InputRestriction;
+import goorm.responseerrormodel.common.exception.ErrorCode;
 import lombok.Getter;
 
 import java.util.List;
@@ -11,25 +11,33 @@ public class ApiResponse<T> {
 
     private Status status;
 
-    @JsonInclude(JsonInclude.Include.NON_NULL) // Null 값인 필드 제외
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private Metadata metadata;
 
-    private Object result;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private List<T> result;
 
-    public ApiResponse(List<T> result) {
-        this.status = new Status(200, "OK");
-        this.metadata = new Metadata(result.size());
-        this.result = result;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private Object data;
+
+    public ApiResponse(List<T> results) {
+        this.status = new Status(ErrorCode.OK.getCode(), ErrorCode.OK.getMessage());
+        this.metadata = new Metadata(results.size());
+        this.result = results;
     }
 
     public ApiResponse(T result) {
-        this.status = new Status(200, "OK");
+        this.status = new Status(ErrorCode.OK.getCode(), ErrorCode.OK.getMessage());
         this.metadata = new Metadata(1);
-        this.result = result;
+        this.result = List.of(result);
+    }
+
+    public ApiResponse(int code, String message) {
+        this.status = new Status(code, message);
     }
 
     public ApiResponse(int code, String message, Object data) {
         this.status = new Status(code, message);
-        this.result = data;
+        this.data = data;
     }
 }

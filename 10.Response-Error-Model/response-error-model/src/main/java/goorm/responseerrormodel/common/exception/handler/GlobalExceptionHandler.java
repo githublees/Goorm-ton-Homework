@@ -12,8 +12,10 @@ import java.io.IOException;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(CustomException.class)
-    protected ApiResponse customExceptionHandler(HttpServletResponse response, CustomException e) {
+    protected <T> ApiResponse<T> customExceptionHandler(HttpServletResponse response, CustomException e) {
 
-        return new ApiResponse(e.getErrorCode(), e.getMessage(), e.getData());
+        response.setStatus(e.getErrorCode().getHttpStatus().value());
+
+        return new ApiResponse(e.getErrorCode().getCode(), e.getMessage(), e.getData());
     }
 }
