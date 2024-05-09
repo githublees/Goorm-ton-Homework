@@ -13,8 +13,19 @@ public class UserService {
 
     private final UserRepository userRepository;
 
+    @Transactional
     public Long save(User user) {
         userRepository.save(user);
         return user.getId();
+    }
+
+    public User login(String userId, String password) {
+        return userRepository.findByUserId(userId)
+                .filter(u -> u.getPassword().equals(password))
+                .orElse(null);
+    }
+
+    public User getUser(Long userId) {
+        return userRepository.findOne(userId);
     }
 }

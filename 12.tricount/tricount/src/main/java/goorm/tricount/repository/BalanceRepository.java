@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor
@@ -23,8 +24,13 @@ public class BalanceRepository {
         }
     }
 
+    public Optional<Balance> findBySettlementId(Long id) {
+        return findAllBySettlementId(id).stream()
+                .findFirst();
+    }
+
     public List<Balance> findAllBySettlementId(Long id) {
-        String jpql = "select b from Balance b where b.settlement.id = :id";
+        String jpql = "select b from Balance b where b.settlement.id = :id and b.balanceStatus != 'DELETE'";
 
         return em.createQuery(jpql, Balance.class)
                 .setParameter("id", id)

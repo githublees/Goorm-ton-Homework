@@ -52,6 +52,10 @@ public class Settlement {
         for (Expense expense : expenses) {
             expense.delete();
         }
+        for (Balance balance : balances) {
+            balance.delete();
+
+        }
     }
 
     //== 조회 로직 ==//

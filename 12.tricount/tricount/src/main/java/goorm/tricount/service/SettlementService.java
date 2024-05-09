@@ -6,6 +6,7 @@ import goorm.tricount.domain.User;
 import goorm.tricount.repository.JoinRepository;
 import goorm.tricount.repository.SettlementRepository;
 import goorm.tricount.repository.UserRepository;
+import goorm.tricount.response.SettlementRes;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,6 +39,7 @@ public class SettlementService {
     @Transactional
     public void joinSettlement(Long settlementId, Long userId) {
 
+        // 방이 없으면 X
         Settlement settlement = settlementRepository.findOne(settlementId);
 
         User user = userRepository.findOne(userId);
@@ -52,11 +54,11 @@ public class SettlementService {
         settlement.delete();
     }
 
-    public List<Settlement> getSettlementList(Long userId) {
-        return settlementRepository.findAllByUserId(userId);
+    public List<SettlementRes> getSettlementList(Long userId) {
+        return SettlementRes.res(settlementRepository.findAllByUserId(userId));
     }
 
-    public Settlement getSettlement(Long settlementId) {
-        return settlementRepository.findOne(settlementId);
+    public SettlementRes getSettlement(Long settlementId) {
+        return SettlementRes.res(settlementRepository.findOne(settlementId));
     }
 }

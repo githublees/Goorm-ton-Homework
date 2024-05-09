@@ -26,7 +26,7 @@ public class Expense {
     private String expenseName;
 
     // Dto
-    @OneToOne
+    @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "USER_ID")
     private User user;
 
@@ -35,7 +35,7 @@ public class Expense {
     private LocalDateTime expenseDate;
 
     @Enumerated(EnumType.STRING)
-    private ExpenseStatus expenseExpenseStatus;
+    private ExpenseStatus expenseStatus;
 
     //== 연관관계 메서드 ==//
     public void setSettlement(Settlement settlement) {
@@ -50,7 +50,7 @@ public class Expense {
         expense.amount = amount;
         expense.user = user;
         expense.expenseDate = LocalDateTime.now();
-        expense.expenseExpenseStatus = ExpenseStatus.ACTIVE;
+        expense.expenseStatus = ExpenseStatus.ACTIVE;
         expense.setSettlement(settlement);
         return expense;
     }
@@ -60,6 +60,6 @@ public class Expense {
      * 지출 삭제
      */
     public void delete() {
-        this.expenseExpenseStatus = ExpenseStatus.DELETE;
+        this.expenseStatus = ExpenseStatus.DELETE;
     }
 }

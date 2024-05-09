@@ -22,7 +22,8 @@ public class ExpenseRepository {
     }
 
     public List<Expense> findAllBySettlementId(Long id) {
-        String jpql = "select e from Expense e where e.settlement.id = :id";
+        String jpql = "select e from Expense e join e.settlement s " +
+                "where s.id = :id and e.expenseStatus != 'DELETE'";
 
         return em.createQuery(jpql, Expense.class)
                 .setParameter("id", id)

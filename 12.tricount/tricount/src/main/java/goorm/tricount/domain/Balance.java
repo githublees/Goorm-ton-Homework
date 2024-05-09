@@ -33,6 +33,9 @@ public class Balance {
     private Long receiverUserNo;
     private String receiverUserName;
 
+    @Enumerated(EnumType.STRING)
+    private BalanceStatus balanceStatus;
+
     //== 연관관계 메서드 ==//
     public void addBalance(Settlement settlement) {
         this.settlement = settlement;
@@ -51,15 +54,7 @@ public class Balance {
         return balance;
     }
 
-    @Override
-    public String toString() {
-        return "Balance{" +
-                ", settlement=" + settlement +
-                ", senderUserNo=" + senderUserNo +
-                ", senderUserName='" + senderUserName + '\'' +
-                ", sendAmount=" + sendAmount +
-                ", receiverUserNo=" + receiverUserNo +
-                ", receiverUserName='" + receiverUserName + '\'' +
-                '}';
+    public void delete() {
+        this.balanceStatus = BalanceStatus.DELETE;
     }
 }

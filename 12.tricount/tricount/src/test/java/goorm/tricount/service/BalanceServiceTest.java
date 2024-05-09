@@ -3,6 +3,7 @@ package goorm.tricount.service;
 import goorm.tricount.domain.Balance;
 import goorm.tricount.domain.Settlement;
 import goorm.tricount.domain.User;
+import goorm.tricount.response.BalanceRes;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,15 +41,18 @@ class BalanceServiceTest {
 
         expenseService.addExpense(settlementId, userId1, "기차표 예매", new BigDecimal("150000"));
         expenseService.addExpense(settlementId, userId2, "숙소 값", new BigDecimal("30000"));
-        expenseService.addExpense(settlementId, userId3, "첫날 저녁", new BigDecimal("80000"));
+        expenseService.addExpense(settlementId, userId3, "첫날 점심", new BigDecimal("80000"));
         expenseService.addExpense(settlementId, userId4, "첫날 저녁", new BigDecimal("100000"));
 
         //when
-        List<Balance> balances = balanceService.createBalance(settlementId);
+        List<BalanceRes> balances = balanceService.createBalance(settlementId);
 
         //then
-        for (Balance balance : balances) {
-            System.out.println(balance.toString());
-        }
+        assertEquals(balances.get(0).getSenderUserName(), "jiseop");
+        assertEquals(balances.get(0).getSendAmount(),"60000");
+        assertEquals(balances.get(0).getReceiverUserName(), "hoseong");
+        assertEquals(balances.get(1).getSenderUserName(), "heajong");
+        assertEquals(balances.get(1).getSendAmount(), "10000");
+        assertEquals(balances.get(1).getReceiverUserName(), "saldfj");
     }
 }

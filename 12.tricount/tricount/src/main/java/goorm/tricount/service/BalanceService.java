@@ -8,6 +8,7 @@ import goorm.tricount.repository.BalanceRepository;
 import goorm.tricount.repository.ExpenseRepository;
 import goorm.tricount.repository.SettlementRepository;
 import goorm.tricount.repository.UserRepository;
+import goorm.tricount.response.BalanceRes;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,6 +19,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -30,12 +32,15 @@ public class BalanceService {
     private final BalanceRepository balanceRepository;
 
 
-    public List<Balance> getBalance(Long settlementId) {
-        return balanceRepository.findAllBySettlementId(settlementId);
+    public void deleteBalance(Long settlementId) {
+        List<Balance> balances = balanceRepository.findAllBySettlementId(settlementId);
+        for (Balance balance : balances) {
+            balance.delete();
+        }
     }
 
     @Transactional
-    public List<Balance> createBalance(Long settlementId) {
+    public List<BalanceRes> createBalance(Long settlementId) {
 
         Settlement settlement = settlementRepository.findOne(settlementId);
         List<Expense> expenses = expenseRepository.findAllBySettlementId(settlementId);
@@ -55,8 +60,8 @@ public class BalanceService {
                     .divide(BigDecimal.valueOf(settlement.getJoins().size()), RoundingMode.HALF_UP)
                     .setScale(0, RoundingMode.HALF_UP);
         }
-        
-        List<Balance> balances = new ArrayList<>();
+
+        List<BalanceRes> balances = new ArrayList<>();
         for (Long senderId : totalUserAmountMap.keySet()) {
             BigDecimal sendPayment = totalUserAmountMap.get(senderId).subtract(avgAmount);
 
@@ -69,16 +74,19 @@ public class BalanceService {
 
                     if (receivePayment.compareTo(BigDecimal.ZERO) > 0) {
                         BigDecimal minusReceive = sendPayment.multiply(new BigDecimal("-1"));
-                        BigDecimal calcAmount = minusReceive.compareTo(receivePayment) < 0 ? minusReceive : receivePayment;
+                        BigDecimal calcAmount = minusReceive.compareTo(receivePayment) <= 0 ? minusReceive : receivePayment;
                         calcAmount = calcAmount.setScale(0, RoundingMode.HALF_UP);
 
                         User sender = userRepository.findOne(senderId);
                         User receiver = userRepository.findOne(receiverId);
 
-                        Balance balance = Balance.createBalance(settlement,  senderId, sender.getUserName(), calcAmount, receiverId, receiver.getUserName());
-                        balances.add(balance);
+                        Balance balance = Balance.createBalance(settlement, senderId, sender.getUserName(), calcAmount, receiverId, receiver.getUserName());
+                        balanceRepository.save(balance);
 
-                        sendPayment.add(sendPayment).add(calcAmount);
+                        balances.add(BalanceRes.res(balance));
+
+                        totalUserAmountMap.put(receiverId, totalUserAmountMap.get(receiverId).subtract(calcAmount));
+                        sendPayment = sendPayment.add(calcAmount);
                         if (sendPayment.compareTo(BigDecimal.ZERO) >= 0) {
                             break;
                         }
@@ -87,7 +95,6 @@ public class BalanceService {
             }
         }
 
-        balanceRepository.saveAll(balances);
         return balances;
     }
 }

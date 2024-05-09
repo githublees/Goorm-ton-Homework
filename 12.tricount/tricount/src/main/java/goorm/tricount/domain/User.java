@@ -21,18 +21,18 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     List<Join> joins = new ArrayList<>();
 
-    private String userNickName;
+    private String userName;
 
     private String password;
 
-    private String userName;
+    private String nickname;
 
     //== 생성 메서드 ==//
-    public static User createUser(String userNickName, String password, String userName) {
+    public static User createUser(String userName, String password, String nickname) {
         User user = new User();
-        user.userNickName = userNickName;
-        user.password = password;
         user.userName = userName;
+        user.password = password;
+        user.nickname = nickname;
         return user;
     }
 }
