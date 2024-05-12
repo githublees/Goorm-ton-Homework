@@ -43,8 +43,6 @@ public class SettlementController extends BaseController {
         return makeResponse("Join Successful");
     }
 
-//    @GetMapping("/settlement//balance")
-
     @DeleteMapping("/settlement/{settlementId}")
     public ApiResponse deleteSettlement(@PathVariable Long settlementId) {
         settlementService.deleteSettlement(settlementId);

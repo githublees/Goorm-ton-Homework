@@ -20,9 +20,8 @@ public class UserService {
     }
 
     public User login(String userId, String password) {
-        return userRepository.findByUserId(userId)
-                .filter(u -> u.getPassword().equals(password))
-                .orElse(null);
+        return userRepository.findByUserId(userId, password)
+                .orElseThrow(() -> new RuntimeException("User info is not found"));
     }
 
     public User getUser(Long userId) {

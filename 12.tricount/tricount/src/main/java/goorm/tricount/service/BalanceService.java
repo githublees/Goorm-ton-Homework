@@ -9,16 +9,15 @@ import goorm.tricount.repository.ExpenseRepository;
 import goorm.tricount.repository.SettlementRepository;
 import goorm.tricount.repository.UserRepository;
 import goorm.tricount.response.BalanceRes;
+import goorm.tricount.response.ExpenseRes;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.math.RoundingMode;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -92,6 +91,77 @@ public class BalanceService {
                         }
                     }
                 }
+            }
+        }
+
+        return balances;
+    }
+
+    @Transactional
+    public List<BalanceRes> getStreamBalance(Long settlementId) {
+        Map<User, BigDecimal> totalUserAmount = expenseRepository.findAllBySettlementId(settlementId)
+                .stream().collect(Collectors.groupingBy(
+                        expense -> expense.getUser(),
+                        Collectors.mapping(
+                                Expense::getAmount,
+                                Collectors.reducing(BigDecimal.ZERO, BigDecimal::add))
+                ));
+
+        BigDecimal avgAmount = Optional.of(settlementRepository.findOne(settlementId))
+                .map(s -> s.getAmount()
+                        .divide(BigDecimal.valueOf(Math.max(1, s.getJoins().size())), RoundingMode.HALF_UP))
+                        .orElse(BigDecimal.ONE);
+
+        Map<User, BigDecimal> calcUserAmount = totalUserAmount.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, userBigDecimalEntry -> userBigDecimalEntry.getValue().subtract(avgAmount)));
+
+        List<Map.Entry<User, BigDecimal>> receivers = calcUserAmount.entrySet().stream()
+                .filter(userBigDecimalEntry -> userBigDecimalEntry.getValue().signum() > 0)
+                .collect(Collectors.toList());
+
+        List<Map.Entry<User, BigDecimal>> senders = calcUserAmount.entrySet().stream()
+                .filter(userBigDecimalEntry -> userBigDecimalEntry.getValue().signum() < 0)
+                .collect(Collectors.toList());
+
+        List<BalanceRes> balances = new ArrayList<>();
+        int receiverIndex = 0;
+        int senderIndex = 0;
+        while (receiverIndex < receivers.size() && senderIndex < senders.size()) {
+            BigDecimal amountToTransfer = receivers.get(receiverIndex).getValue().add(senders.get(senderIndex).getValue());
+
+            if (amountToTransfer.signum() < 0) {
+                balances.add(BalanceRes.res(
+                        senders.get(senderIndex).getKey().getId(),
+                        senders.get(senderIndex).getKey().getNickname(),
+                        receivers.get(receiverIndex).getValue().abs(),
+                        receivers.get(receiverIndex).getKey().getId(),
+                        receivers.get(receiverIndex).getKey().getNickname()
+                ));
+                receivers.get(receiverIndex).setValue(BigDecimal.ZERO);
+                senders.get(senderIndex).setValue(amountToTransfer);
+                receiverIndex++;
+            } else if (amountToTransfer.signum() > 0) {
+                balances.add(BalanceRes.res(
+                        senders.get(senderIndex).getKey().getId(),
+                        senders.get(senderIndex).getKey().getNickname(),
+                        senders.get(senderIndex).getValue().abs(),
+                        receivers.get(receiverIndex).getKey().getId(),
+                        receivers.get(receiverIndex).getKey().getNickname()
+                ));
+                receivers.get(receiverIndex).setValue(amountToTransfer);
+                senders.get(senderIndex).setValue(BigDecimal.ZERO);
+                senderIndex++;
+            } else {
+                balances.add(BalanceRes.res(
+                        senders.get(senderIndex).getKey().getId(),
+                        senders.get(senderIndex).getKey().getNickname(),
+                        senders.get(senderIndex).getValue().abs(),
+                        receivers.get(receiverIndex).getKey().getId(),
+                        receivers.get(receiverIndex).getKey().getNickname()
+                ));
+                receivers.get(receiverIndex).setValue(BigDecimal.ZERO);
+                senders.get(senderIndex).setValue(BigDecimal.ZERO);
+                receiverIndex++;
+                senderIndex++;
             }
         }
 

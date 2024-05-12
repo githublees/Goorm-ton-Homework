@@ -26,4 +26,14 @@ public class BalanceRes {
         balanceRes.receiverUserName = balance.getReceiverUserName();
         return balanceRes;
     }
+
+    public static BalanceRes res(Long senderUserNo, String senderUserName, BigDecimal sendAmount, Long receiverUserNo, String receiverUserName) {
+        BalanceRes balanceRes = new BalanceRes();
+        balanceRes.senderUserNo = senderUserNo;
+        balanceRes.senderUserName = senderUserName
+        balanceRes.sendAmount = String.valueOf(sendAmount);
+        balanceRes.receiverUserNo = receiverUserNo;
+        balanceRes.receiverUserName = receiverUserName;
+        return balanceRes;
+    }
 }

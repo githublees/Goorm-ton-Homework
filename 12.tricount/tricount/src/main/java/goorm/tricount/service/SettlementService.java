@@ -40,6 +40,7 @@ public class SettlementService {
     public void joinSettlement(Long settlementId, Long userId) {
 
         // 방이 없으면 X
+
         Settlement settlement = settlementRepository.findOne(settlementId);
 
         User user = userRepository.findOne(userId);

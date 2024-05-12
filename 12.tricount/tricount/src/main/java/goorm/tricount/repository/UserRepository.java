@@ -23,15 +23,13 @@ public class UserRepository {
         return em.find(User.class, id);
     }
 
-    public List<User> findAll() {
-        String jpql = "select u from User u";
+    public Optional<User> findByUserId(String userId, String password) {
+        String jpql = "select u from User u where u.userName = :userId and u.password = :password";
         return em.createQuery(jpql, User.class)
-                .getResultList();
-
-    }
-    public Optional<User> findByUserId(String userId) {
-        return findAll().stream()
-                .filter(u -> u.getUserName().equals(userId))
+                .setParameter("userId", userId)
+                .setParameter("password", password)
+                .getResultList()
+                .stream()
                 .findFirst();
     }
 }
